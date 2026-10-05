@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>10/7 ユニバ作戦表</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+<style>
+/* Layout: one narrow column, a time rail down the left, day flowing from morning (green) to night (horror) */
+:root {
+  --bg: #eef0f4;
+  --surface: #ffffff;
+  --fg: #1d1a26;
+  --muted: #5d5a6b;
+  --line: #d6d6e0;
+  --jungle: #2f7a3a;
+  --jungle-soft: #e1f0e2;
+  --space: #3d4fc4;
+  --space-soft: #e3e6fa;
+  --horror: #b3261e;
+  --horror-soft: #f8e1df;
+  --meal: #8a6a12;
+  --meal-soft: #f5edd4;
+  --ride: #5d5a6b;
+  --ride-soft: #e8e7ee;
+  --display: "Dela Gothic One", "Hiragino Sans", "Yu Gothic", sans-serif;
+  --body: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #14121b; --surface: #1f1c29; --fg: #ecebf2; --muted: #a7a4b6; --line: #34303f;
+    --jungle: #7fcf8a; --jungle-soft: #1e3322; --space: #9ea9ff; --space-soft: #232a52;
+    --horror: #ff8a80; --horror-soft: #3d1b1a; --meal: #e3c46a; --meal-soft: #352d14;
+    --ride: #b9b6c8; --ride-soft: #2a2735; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #14121b; --surface: #1f1c29; --fg: #ecebf2; --muted: #a7a4b6; --line: #34303f;
+  --jungle: #7fcf8a; --jungle-soft: #1e3322; --space: #9ea9ff; --space-soft: #232a52;
+  --horror: #ff8a80; --horror-soft: #3d1b1a; --meal: #e3c46a; --meal-soft: #352d14;
+  --ride: #b9b6c8; --ride-soft: #2a2735; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 15px; line-height: 1.7; }
+.wrap { max-width: 640px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 56px; display: grid; gap: 28px; }
+header { display: grid; gap: 8px; }
+.date { font-size: 13px; letter-spacing: .08em; color: var(--muted); font-weight: 700; }
+h1 { font-family: var(--display); font-weight: 400; font-size: clamp(30px, 8vw, 44px); line-height: 1.15; margin: 0; text-wrap: balance; }
+.lede { margin: 0; color: var(--muted); }
+.musts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.chip { font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 999px; white-space: nowrap; }
+.c-dk { background: var(--jungle-soft); color: var(--jungle); }
+.c-sp { background: var(--space-soft); color: var(--space); }
+.c-hr { background: var(--horror-soft); color: var(--horror); }
+.c-ml { background: var(--meal-soft); color: var(--meal); }
+.c-rd { background: var(--ride-soft); color: var(--ride); }
+
+h2 { font-family: var(--display); font-weight: 400; font-size: 20px; margin: 0 0 12px; }
+section { min-width: 0; }
+
+.box { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+.box ul { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
+.box li::marker { color: var(--muted); }
+.key { font-weight: 700; }
+
+/* timeline */
+.tl { list-style: none; margin: 0; padding: 0; display: grid; }
+.step { display: grid; grid-template-columns: 58px 1fr; gap: 12px; }
+.time { font-variant-numeric: tabular-nums; font-weight: 700; font-size: 14px; text-align: right; padding-top: 14px; color: var(--muted); }
+.card { position: relative; border-left: 3px solid var(--line); padding: 12px 0 18px 16px; min-width: 0; }
+.step[data-k="dk"] .card { border-color: var(--jungle); }
+.step[data-k="sp"] .card { border-color: var(--space); }
+.step[data-k="hr"] .card { border-color: var(--horror); }
+.step[data-k="ml"] .card { border-color: var(--meal); }
+.card label { display: flex; gap: 10px; align-items: flex-start; cursor: pointer; }
+.card input { margin-top: 5px; width: 18px; height: 18px; flex: none; accent-color: var(--fg); }
+.card input:focus-visible { outline: 2px solid var(--space); outline-offset: 2px; }
+.title { font-weight: 700; font-size: 16px; display: block; }
+.head { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; }
+.note { margin: 4px 0 0 28px; color: var(--muted); font-size: 14px; }
+.note b { color: var(--fg); }
+.step.done .title { text-decoration: line-through; color: var(--muted); }
+
+.phase { font-size: 12px; font-weight: 700; letter-spacing: .12em; color: var(--muted); padding: 18px 0 6px 70px; }
+.phase:first-child { padding-top: 0; }
+
+.plan-b { display: grid; gap: 10px; }
+.plan-b .row { display: grid; gap: 2px; }
+.plan-b .if { font-weight: 700; }
+.plan-b .then { color: var(--muted); font-size: 14px; }
+
+footer { font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 14px; }
+@media (max-width: 380px) {
+  .step { grid-template-columns: 48px 1fr; gap: 8px; }
+  .phase { padding-left: 56px; }
+}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="date">2026.10.07 WED ・ ユニバーサル・スタジオ・ジャパン ・ 8:00–22:00</div>
+    <h1>10/7 ユニバ作戦表</h1>
+    <p class="lede">昼は乗り物、夜はホラーナイト。整理券と「よやくのり」をアプリで回して、待ち時間を減らす作戦です。</p>
+    <div class="musts">
+      <span class="chip c-dk">マスト｜ドンキーコング</span>
+      <span class="chip c-sp">マスト｜スペース・ファンタジー</span>
+      <span class="chip c-hr">マスト｜ホラーナイト</span>
+    </div>
+  </header>
+
+  <section>
+    <h2>前日までにやること</h2>
+    <div class="box">
+      <ul>
+        <li><span class="key">公式アプリをインストール</span>して、<span class="key">全員のチケットを1台のアプリに登録</span>しておく（整理券・よやくのりをまとめて取るため）</li>
+        <li>営業時間は<span class="key">8:00〜22:00</span>。<span class="key">ホラーナイトの開始時間</span>だけ前日にアプリで確認</li>
+        <li>エクスプレス・パスはなし。<span class="key">整理券・よやくのり・シングルライダー</span>で待ち時間を減らす</li>
+        <li><span class="key">食べ物は基本持ち込み禁止</span>（離乳食やアレルギー対応食などは例外）。パーク内で食べる前提で、細かい条件は公式サイトのFAQで確認</li>
+        <li>スマホを満充電＋<span class="key">モバイルバッテリー</span>。夜は冷えるので羽織るものも</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>当日のタイムライン</h2>
+    <ol class="tl" id="tl">
+      <li class="phase">朝｜入ったらすぐアプリ</li>
+
+      <li class="step" data-k="rd" data-id="s1">
+        <div class="time">8:00</div>
+        <div class="card"><label><input type="checkbox" id="c-s1"><span class="title">ゲートに到着・入場</span></label>
+          <p class="note">8:00の開園に合わせて到着。入場前にアプリのログインと、チケット登録ができているか確認。</p></div>
+      </li>
+
+      <li class="step" data-k="dk" data-id="s2">
+        <div class="time">8:05</div>
+        <div class="card"><label><input type="checkbox" id="c-s2"><span class="title">アプリで整理券＋よやくのりを確保</span></label>
+          <div class="head" style="margin:4px 0 0 28px"><span class="chip c-dk">整理券</span><span class="chip c-sp">よやくのり</span></div>
+          <p class="note">入場したらすぐに<b>①ニンテンドー・ワールドのエリア入場整理券</b>、<b>②その日の対象で一番待ち時間が長いアトラクションのよやくのり</b>（ハリー・ポッターやミニオンなど）を取る。どちらも良い時間帯から埋まるので最優先。</p></div>
+      </li>
+
+      <li class="step" data-k="sp" data-id="s3">
+        <div class="time">8:15</div>
+        <div class="card"><label><input type="checkbox" id="c-s3"><span class="title">スペース・ファンタジー・ザ・ライド</span></label>
+          <div class="head" style="margin:4px 0 0 28px"><span class="chip c-sp">マスト</span><span class="chip c-rd">通常列</span></div>
+          <p class="note">入口に近いハリウッド・エリアにあるので、整理券の時間までにまず通常列で乗る。近くのハリウッド・ドリームも待ちが短ければここで。</p></div>
+      </li>
+
+      <li class="step" data-k="dk" data-id="s4">
+        <div class="time">整理券<br>の時間</div>
+        <div class="card"><label><input type="checkbox" id="c-s4"><span class="title">ドンキーコング・カントリー</span></label>
+          <div class="head" style="margin:4px 0 0 28px"><span class="chip c-dk">マスト</span></div>
+          <p class="note"><b>マインカート・マッドネス</b>に乗る。エリアに入ったついでにマリオカート・ヨッシーも回収して、写真もここで。整理券が午後なら下の昼の予定と入れ替える。</p></div>
+      </li>
+
+      <li class="phase">昼｜よやくのりで効率化</li>
+
+      <li class="step" data-k="sp" data-id="s5">
+        <div class="time">予約枠</div>
+        <div class="card"><label><input type="checkbox" id="c-s5"><span class="title">よやくのりのアトラクション</span></label>
+          <div class="head" style="margin:4px 0 0 28px"><span class="chip c-sp">よやくのり</span></div>
+          <p class="note">朝取った時間に乗る。<b>乗り終わったらすぐ次のよやくのり</b>を取って、人気アトラクションを並ばずに回していく。</p></div>
+      </li>
+
+      <li class="step" data-k="ml" data-id="s6">
+        <div class="time">11:00</div>
+        <div class="card"><label><input type="checkbox" id="c-s6"><span class="title">早めのランチ</span></label>
+          <div class="head" style="margin:4px 0 0 28px"><span class="chip c-ml">食事</span></div>
+          <p class="note">11時前か14時以降なら混雑を避けられる。モバイルオーダー対応の店が楽。</p></div>
+      </li>
+
+      <li class="step" data-k="rd" data-id="s7">
+        <div class="time">12:00</div>
+        <div class="card"><label><input type="checkbox" id="c-s7"><span class="title">ハリー・ポッター エリア</span></label>
+          <div class="head" style="margin:4px 0 0 28px"><span class="chip c-rd">乗り物</span></div>
+          <p class="note">フォービドゥン・ジャーニーはシングルライダーで大幅に短縮できる（別々に乗ってOKなら）。</p></div>
+      </li>
+
+      <li class="step" data-k="rd" data-id="s8">
+        <div class="time">14:00</div>
+        <div class="card"><label><input type="checkbox" id="c-s8"><span class="title">ジュラシック・パーク／ジョーズ</span></label>
+          <div class="head" style="margin:4px 0 0 28px"><span class="chip c-rd">乗り物</span></div>
+          <p class="note">ザ・フライング・ダイナソーはシングルライダーあり。ジョーズは比較的回転が早い。</p></div>
+      </li>
+
+      <li class="step" data-k="rd" data-id="s9">
+        <div class="time">15:30</div>
+        <div class="card"><label><input type="checkbox" id="c-s9"><span class="title">ミニオン・パーク／ハリウッド・ドリーム</span></label>
+          <div class="head" style="margin:4px 0 0 28px"><span class="chip c-rd">乗り物</span></div>
+          <p class="note">よやくのりが取れていればここで消化。夕方は夜に備えて少し休憩もはさむ。</p></div>
+      </li>
+
+      <li class="phase">夜｜ホラーナイト</li>
+
+      <li class="step" data-k="ml" data-id="s10">
+        <div class="time">17:00</div>
+        <div class="card"><label><input type="checkbox" id="c-s10"><span class="title">暗くなる前に夕食</span></label>
+          <div class="head" style="margin:4px 0 0 28px"><span class="chip c-ml">食事</span></div>
+          <p class="note">ホラーナイトが始まるとレストランが一気に混む。トイレもここで。</p></div>
+      </li>
+
+      <li class="step" data-k="hr" data-id="s11">
+        <div class="time">18:00</div>
+        <div class="card"><label><input type="checkbox" id="c-s11"><span class="title">ホラー・メイズ 1つ目</span></label>
+          <div class="head" style="margin:4px 0 0 28px"><span class="chip c-hr">マスト</span></div>
+          <p class="note">1〜2時間待ちもある。<b>一番入りたいものを最初に</b>並ぶ。</p></div>
+      </li>
+
+      <li class="step" data-k="hr" data-id="s12">
+        <div class="time">19:30</div>
+        <div class="card"><label><input type="checkbox" id="c-s12"><span class="title">ストリート・ゾンビ</span></label>
+          <div class="head" style="margin:4px 0 0 28px"><span class="chip c-hr">ホラー</span></div>
+          <p class="note">ハリウッド〜ニューヨークあたりが中心。並ばずに歩くだけで楽しめる。</p></div>
+      </li>
+
+      <li class="step" data-k="hr" data-id="s13">
+        <div class="time">20:30</div>
+        <div class="card"><label><input type="checkbox" id="c-s13"><span class="title">メイズ2つ目 or 空いてる乗り物</span></label>
+          <p class="note">22時閉園なので夜も時間はたっぷり。21時以降は乗り物の待ち時間が下がりやすいので、アプリで見て短い方へ。乗り残しの回収タイム。</p></div>
+      </li>
+
+      <li class="step" data-k="rd" data-id="s14">
+        <div class="time">22:00</div>
+        <div class="card"><label><input type="checkbox" id="c-s14"><span class="title">おつかれさま</span></label>
+          <p class="note">帰りの駅は混むので、少し時間をずらすのもあり。</p></div>
+      </li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>うまくいかなかったら</h2>
+    <div class="box plan-b">
+      <div class="row"><span class="if">整理券が午後の時間しか取れなかった</span><span class="then">午前はハリポタ・ジュラシックを先に回して、昼以降にドンキーコングへ入れ替える。</span></div>
+      <div class="row"><span class="if">よやくのりが取れなかった</span><span class="then">アプリで時間をおいて再確認（空き枠が出ることあり）。だめならシングルライダーか、閉園前の空いてくる時間に通常列で並ぶ。</span></div>
+      <div class="row"><span class="if">スペース・ファンタジーが朝混んでいた</span><span class="then">夕方以降に回す。ホラーナイトの合間にも乗りやすい。</span></div>
+      <div class="row"><span class="if">時間が足りない</span><span class="then">マストの3つ以外は削ってOK。ホラーナイトのメイズは1つに絞る。</span></div>
+    </div>
+  </section>
+
+  <footer>営業時間は8:00〜22:00で確認済み。それ以外の時間は目安です。ホラーナイトの開始時間とよやくのりの対象は当日アプリで確認してください。チェックはこの端末に保存されます。</footer>
+</div>
+
+<script>
+(function () {
+  var KEY = "usj1007-done";
+  var done = {};
+  try { done = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { done = {}; }
+  document.querySelectorAll(".step").forEach(function (step) {
+    var id = step.getAttribute("data-id");
+    var box = step.querySelector("input");
+    if (done[id]) { box.checked = true; step.classList.add("done"); }
+    box.addEventListener("change", function () {
+      step.classList.toggle("done", box.checked);
+      if (box.checked) done[id] = 1; else delete done[id];
+      try { localStorage.setItem(KEY, JSON.stringify(done)); } catch (e) {}
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
